@@ -1,41 +1,42 @@
 using Microsoft.AspNetCore.Mvc;
-using TodoListApi.Models;
-using TodoListApi.Services;
+using ToDoListApi.Dtos;
+using ToDoListApi.Models;
+using ToDoListApi.Services;
 
-namespace TodoListApi.Controllers;
+namespace ToDoListApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class TodoController : ControllerBase
+public class ToDoController : ControllerBase
 {
-    private readonly TodoService _service;
+    private readonly ToDoService _service;
 
-    public TodoController(TodoService service)
+    public ToDoController(ToDoService service)
     {
         _service = service;
     }
 
     [HttpGet]
-    public ActionResult<List<TodoItem>> GetAll() => _service.GetAll();
+    public ActionResult<List<ToDoItemDto>> GetAll() => _service.GetAll();
 
     [HttpGet("{id}")]
-    public ActionResult<TodoItem> GetById(int id)
+    public ActionResult<ToDoItemDto> GetById(int id)
     {
         var item = _service.GetById(id);
         return item == null ? NotFound() : Ok(item);
     }
 
     [HttpPost]
-    public ActionResult<TodoItem> Create([FromBody] string title)
+    public ActionResult<ToDoItemDto> Create([FromBody] CreateToDoItemDto dto)
     {
-        var item = _service.Create(title);
+        var item = _service.Create(dto);
         return CreatedAtAction(nameof(GetById), new { id = item.Id }, item);
     }
 
     [HttpPut("{id}")]
-    public IActionResult Update(int id, [FromBody] TodoItem updated)
+    public IActionResult Update(int id, [FromBody] UpdateToDoItemDto dto)
     {
-        var success = _service.Update(id, updated.Title, updated.IsCompleted);
+        var success = _service.Update(id, dto);
         return success ? NoContent() : NotFound();
     }
 

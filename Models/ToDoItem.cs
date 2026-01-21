@@ -1,6 +1,6 @@
-namespace TodoListApi.Models;
+namespace ToDoListApi.Models;
 
-public class TodoItem
+public class ToDoItem
 {
     public int Id { get; set; }
     public string Title { get; set; } = string.Empty;

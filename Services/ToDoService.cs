@@ -1,36 +1,38 @@
-using TodoListApi.Models;
+using ToDoListApi.Dtos;
+using ToDoListApi.Mappers;
+using ToDoListApi.Models;
 
-namespace TodoListApi.Services;
+namespace ToDoListApi.Services;
 
-public class TodoService
+public class ToDoService
 {
-    private readonly List<TodoItem> _items = new();
+    private readonly List<ToDoItem> _items = new();
     private int _nextId = 1;
 
-    public List<TodoItem> GetAll() => _items;
+    public List<ToDoItemDto> GetAll() => _items.Select(x => x.ToDto()).ToList();
 
-    public TodoItem? GetById(int id) => _items.FirstOrDefault(x => x.Id == id);
+    public ToDoItemDto? GetById(int id) => _items.FirstOrDefault(x => x.Id == id)?.ToDto();
 
-    public TodoItem Create(string title)
+    public ToDoItemDto Create(CreateToDoItemDto dto)
     {
-        var item = new TodoItem { Id = _nextId++, Title = title, IsCompleted = false };
+        var item = dto.FromCreateDto();
+        item.Id = _nextId++;
         _items.Add(item);
-        return item;
+        return item.ToDto();
     }
 
-    public bool Update(int id, string title, bool isCompleted)
+    public bool Update(int id, UpdateToDoItemDto dto)
     {
-        var item = GetById(id);
+        var item = _items.FirstOrDefault(x => x.Id == id);
         if (item == null) return false;
 
-        item.Title = title;
-        item.IsCompleted = isCompleted;
+        item.UpdateFromDto(dto);
         return true;
     }
 
     public bool Delete(int id)
     {
-        var item = GetById(id);
+        var item = _items.FirstOrDefault(x => x.Id == id);
         return item != null && _items.Remove(item);
     }
 }

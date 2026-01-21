@@ -1,8 +1,8 @@
-using TodoListApi.Services;
+using ToDoListApi.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
-builder.Services.AddSingleton<TodoService>();
+builder.Services.AddSingleton<ToDoService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
